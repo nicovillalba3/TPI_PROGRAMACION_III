@@ -2,6 +2,12 @@ using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Añadir servicios al contenedor.
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});// Esta configuración es necesaria para que los enum se conviertan en cadena. Sin esta configuración los enum se convierten en Enteros.
+
 // Add services to the container.
 
 builder.Services.AddControllers();

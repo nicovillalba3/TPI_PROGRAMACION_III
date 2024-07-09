@@ -8,15 +8,15 @@ namespace Domain.Entities
 {
     public class Product
     {
-        public string Name {  get; set; }
+        public required string Name {  get; set; }
 
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
-        public int Stock {  get; set; }
+        public required int Stock {  get; set; }
 
-        public double Price { get; set; }
+        public required double Price { get; set; }
             
-        public string Image { get; set; }
+        public required string Image { get; set; }
 
     }
 }

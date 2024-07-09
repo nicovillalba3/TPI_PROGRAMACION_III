@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enum;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 namespace Application.Services
 {
     public class UserService : IUserService
+        //IMPLEMENTACION real de IUserService.
     {
         private static List<User> _users = new List<User>(); //LISTA ESTÁTICA DE USUARIOS.
 
@@ -15,7 +17,7 @@ namespace Application.Services
             {
                 return Task.FromResult(false); // El usuario ya existe
             }
-
+            user.Role = UserRole.CommonUser;
             _users.Add(user);
             return Task.FromResult(true);
         }
@@ -30,6 +32,11 @@ namespace Application.Services
         {
             // Lógica de cierre de sesión si es necesario (por ejemplo, eliminar cookies, etc.)
             return Task.CompletedTask;
+        }
+
+        public bool IsAdmin(User user)
+        {
+            return user.Role == UserRole.Admin; //RETORNA True si admin o false si no lo es.
         }
     }
 }
