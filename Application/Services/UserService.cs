@@ -1,42 +1,45 @@
-﻿using Domain.Entities;
-using Domain.Enum;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Domain.Entities;
+using Domain.Interfaces;
+using Domain.Enum;
+
+using Microsoft.AspNetCore.Http;
+using Application.Dtos;
 
 namespace Application.Services
 {
-    public class UserService : IUserService
-        //IMPLEMENTACION real de IUserService.
+    public class UserService 
     {
-        private static List<User> _users = new List<User>(); //LISTA ESTÁTICA DE USUARIOS.
-
-        public Task<bool> RegisterAsync(User user)
+        private readonly IUserRepository _repository;
+        public UserService(IUserRepository repository)
         {
-            if (_users.Any(u => u.Email == user.Email))
+            _repository = repository;
+        }
+
+        public User Get(string name)
+        {
+            return _repository.Get(name);
+        }
+
+        public List<User> GetAll()
+        {
+            return _repository.Get();
+        }
+
+        public int AddUser(UserForAddRequest request)
+        {
+            var user = new User()
             {
-                return Task.FromResult(false); // El usuario ya existe
-            }
-            user.Role = UserRole.CommonUser;
-            _users.Add(user);
-            return Task.FromResult(true);
+                UserName = request.Name,
+                Email = request.Email,
+                Password = request.Password
+            };
+            return _repository.AddUser(user);
         }
 
-        public Task<User> LoginAsync(string email, string password)
-        {
-            var user = _users.SingleOrDefault(u => u.Email == email && u.Password == password);
-            return Task.FromResult(user); // Devuelve null si el usuario no existe o la contraseña es incorrecta
-        }
-
-        public Task LogoutAsync()
-        {
-            // Lógica de cierre de sesión si es necesario (por ejemplo, eliminar cookies, etc.)
-            return Task.CompletedTask;
-        }
-
-        public bool IsAdmin(User user)
-        {
-            return user.Role == UserRole.Admin; //RETORNA True si admin o false si no lo es.
-        }
     }
 }
