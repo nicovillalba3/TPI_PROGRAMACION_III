@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Infrastructure.Data;
 using Domain.Interfaces;
 using Infraestructure.Repositories;
+using Infraestructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +27,12 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddDbContext<ApplicationContext>(dbContextOption => dbContextOption.UseSqlite(
-builder.Configuration["ConnectionStrings:DBConecctionString"],b=>b.MigrationsAssembly("Web")));
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("DBConnectionString"),
+        b => b.MigrationsAssembly("Web") 
+    )
+);
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IProductService, ProductService>();
@@ -39,7 +44,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-var app = builder.Build();
+var app = builder.Build(); 
 
 // Configurar el pipeline de middleware HTTP
 if (app.Environment.IsDevelopment())
