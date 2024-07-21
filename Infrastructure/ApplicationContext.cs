@@ -12,12 +12,11 @@ namespace Infrastructure.Data
     {
         public DbSet<User> Users { get; set; }  // Se traduce a una tabla que va a tener coleccion de usuarios.
 
-        private readonly bool isTestingEnvironment;
-
-        public ApplicationContext(DbContextOptions<ApplicationContext> options, bool isTestingEnvironment = false) : base(options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            this.isTestingEnvironment = isTestingEnvironment;
+
         }
 
-}
+
+    }
 }
