@@ -36,7 +36,8 @@ namespace Application.Services
             {
                 UserName = request.Name,
                 Email = request.Email,
-                Password = request.Password
+                Password = request.Password,
+                Role = request.Role
             };
             return _repository.AddUser(user);
         }
@@ -52,7 +53,8 @@ namespace Application.Services
                 Id = request.Id,
                 UserName = request.Name,
                 Email = request.Email,
-                Password = request.Password
+                Password = request.Password,
+                Role = request.Role
             };
             _repository.UpdateUser(user);
         }

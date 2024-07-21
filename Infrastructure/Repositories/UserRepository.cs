@@ -55,6 +55,7 @@ namespace Infraestructure.Repositories
                 existingUser.UserName = user.UserName;
                 existingUser.Email = user.Email;
                 existingUser.Password = user.Password;
+                existingUser.Role = user.Role;
                 _context.SaveChanges();
             }
         }
