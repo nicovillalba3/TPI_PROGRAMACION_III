@@ -21,5 +21,9 @@ namespace Domain.Entities
         public  string Password { get;  set; }
 
         public  UserRole Role { get; set; }
+
+        
     }
+
+    
 }

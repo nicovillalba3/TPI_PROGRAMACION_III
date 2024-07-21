@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace Domain.Entities
     {
         public required string Name {  get; set; }
 
-        public required int Id { get; set; }
+        public required string Id { get; set; }
 
         public required int Stock {  get; set; }
 
@@ -18,20 +19,47 @@ namespace Domain.Entities
             
         public required string Image { get; set; }
 
-        public Product(string name, string id, int stock, double price, string image)
+
+        public void CreateProduct(List<Product> products, Product product, User user)
         {
-            Name = name;
+            if (user.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Sólo el administrador puede crear nuevos productos.");
+            }
 
-            Id = id;
-            
-            Stock = stock;
-
-            Price = price;
-
-            Image = image;
-
+            products.Add(product);
         }
 
+        public void EditProduct(List<Product> products, int productId, string name, int stock, double price, string image, User user)
+        {
+            if (user.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Sólo el administrador puede modificar productos.");
+            }
+
+            var product = products.FirstOrDefault(p => p.Id == productId);
+            if (product != null)
+            {
+                product.Name = name;
+                product.Image = image;
+                product.Price = price;
+                product.Stock = stock;
+            }
+        }
+
+        public void DeleteProduct(List<Product> products, int productId, User user)
+        {
+            if (user.Role != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Sólo el administrador puede eliminar productos.");
+            }
+
+            var product = products.FirstOrDefault(p => p.Id == productId);
+            if (product != null)
+            {
+                products.Remove(product);
+            }
+        }
 
     }
 }
