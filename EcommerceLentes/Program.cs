@@ -13,6 +13,7 @@ using Infrastructure.Data;
 using Domain.Interfaces;
 using Infraestructure.Repositories;
 using Infraestructure;
+using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,11 +29,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlite(
-        builder.Configuration.GetConnectionString("DBConnectionString"),
-        b => b.MigrationsAssembly("Web") 
-    )
-);
+    options.UseSqlite(builder.Configuration.GetConnectionString("DBConecctionString"),
+        b => b.MigrationsAssembly("Web")));
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IProductService, ProductService>();
