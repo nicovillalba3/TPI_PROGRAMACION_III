@@ -22,10 +22,9 @@ namespace Application.Services
             _repository = repository;
         }
 
-        private static List<User> _users = new List<User>();
-        public User Get(string name)
+        public User Get(int id)
         {
-            return _repository.Get(name);
+            return _repository.Get(id);
         }
 
         public List<User> GetAll()
@@ -39,9 +38,27 @@ namespace Application.Services
             {
                 UserName = request.Name,
                 Email = request.Email,
-                Password = request.Password
+                Password = request.Password,
+                Role = request.Role
             };
             return _repository.AddUser(user);
+        }
+        public bool DeleteUser(int id)
+        {
+           return _repository.DeleteUser(id);
+        }
+
+        public void UpdateUser(UserForUpdateRequest request)
+        {
+            var user = new User()
+            {
+                Id = request.Id,
+                UserName = request.Name,
+                Email = request.Email,
+                Password = request.Password,
+                Role = request.Role
+            };
+            _repository.UpdateUser(user);
         }
 
         public Task<bool> UpdateUserAsync(UserForUpdateRequest user)

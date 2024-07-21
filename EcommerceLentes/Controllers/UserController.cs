@@ -18,9 +18,9 @@ namespace Web.Controllers
 
 
         [HttpGet("{name}")]
-        public IActionResult Get(string name)
+        public IActionResult Get(int id)
         {
-            return Ok(_service.Get(name));
+            return Ok(_service.Get(id));
         }
 
         [HttpGet]
@@ -35,21 +35,26 @@ namespace Web.Controllers
             return Ok(_service.AddUser(body));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UserForUpdateRequest body)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
-            return Ok(await _service.UpdateUserAsync(body));
+            bool isDeleted = _service.DeleteUser(id);
+            if (isDeleted)
+            {
+                return Ok(new { message = "Usuario Eliminado" });
+            }
+            else
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [HttpPut]
+        public IActionResult Update([FromBody] UserForUpdateRequest body)
         {
-            var result = await _service.DeleteUserAsync(id);
-            if (!result)
-            {
-                return NotFound("User not found.");
-            }
-            return Ok("User deleted successfully.");
+            _service.UpdateUser(body);
+            return Ok(new { message = "Usuario Actualizado" });
         }
+
     }
 }
