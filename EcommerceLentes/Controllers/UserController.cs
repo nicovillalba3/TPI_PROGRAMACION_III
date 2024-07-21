@@ -35,5 +35,26 @@ namespace Web.Controllers
             return Ok(_service.AddUser(body));
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            bool isDeleted = _service.DeleteUser(id);
+            if (isDeleted)
+            {
+                return Ok(new { message = "Usuario Eliminado" });
+            }
+            else
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] UserForUpdateRequest body)
+        {
+            _service.UpdateUser(body);
+            return Ok(new { message = "Usuario Actualizado" });
+        }
+
     }
 }

@@ -40,6 +40,22 @@ namespace Application.Services
             };
             return _repository.AddUser(user);
         }
+        public bool DeleteUser(int id)
+        {
+           return _repository.DeleteUser(id);
+        }
+
+        public void UpdateUser(UserForUpdateRequest request)
+        {
+            var user = new User()
+            {
+                Id = request.Id,
+                UserName = request.Name,
+                Email = request.Email,
+                Password = request.Password
+            };
+            _repository.UpdateUser(user);
+        }
 
     }
 }

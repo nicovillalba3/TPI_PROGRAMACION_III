@@ -34,5 +34,29 @@ namespace Infraestructure.Repositories
             _context.SaveChanges();
             return user.Id;
         }
+        public bool DeleteUser(int id)
+        {
+            var user = _context.Users.Find(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+        
+
+        public void UpdateUser(User user)
+        {
+            var existingUser = _context.Users.Find(user.Id);
+            if (existingUser != null)
+            {
+                existingUser.UserName = user.UserName;
+                existingUser.Email = user.Email;
+                existingUser.Password = user.Password;
+                _context.SaveChanges();
+            }
+        }
     }
 }
