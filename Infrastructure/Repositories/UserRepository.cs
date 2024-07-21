@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,8 @@ namespace Infraestructure.Repositories
         public int AddUser(User user)
         {
             _context.Users.Add(user);
-            return _context.SaveChanges();
+            _context.SaveChanges();
+            return user.Id;
         }
     }
 }
