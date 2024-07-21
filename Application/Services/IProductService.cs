@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Dtos;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Application.Services
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-        Task<Product> GetProductByIdAsync(string id);
-        Task<bool> CreateProductAsync(Product product);
-        Task<bool> UpdateProductAsync(Product product);
-        Task<bool> DeleteProductAsync(string id);
+        Product Get(int id);
+        List<Product> GetAll();
+        void AddProduct(ProductForAddRequest request);
+        void UpdateProduct(ProductForUpdateRequest request);
+        bool DeleteProduct(int id, int userId);
     }
 }

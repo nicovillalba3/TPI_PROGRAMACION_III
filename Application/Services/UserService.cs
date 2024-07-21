@@ -20,9 +20,9 @@ namespace Application.Services
             _repository = repository;
         }
 
-        public User Get(string name)
+        public User Get(int id)
         {
-            return _repository.Get(name);
+            return _repository.Get(id);
         }
 
         public List<User> GetAll()

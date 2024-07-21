@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.Dtos;
+using Application.Services;
 using Domain.Entities;
 using Domain.Enum;
 using Microsoft.AspNetCore.Mvc;
@@ -9,84 +10,82 @@ namespace Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : Controller
+    public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
-        private readonly IUserService _userService;
+        private readonly IProductService _service;
 
-        public ProductController(IProductService productService, IUserService userService)
+        // Constructor actualizado para inyectar IProductService
+        public ProductController(IProductService service)
         {
-            _productService = productService;
-            _userService = userService; 
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
+            _service = service;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(string id)
+        public IActionResult Get(int id)
         {
-            var product = await _productService.GetProductByIdAsync(id);
+            var product = _service.Get(id);
             if (product == null)
             {
-                return NotFound();
+                return NotFound("Product not found.");
             }
-
             return Ok(product);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
+        [HttpGet]
+        public IActionResult Get()
         {
-            var currentUser = await _userService.GetCurrentUserAsync();
-            if (currentUser == null || currentUser.Role != UserRole.Admin)
+            var products = _service.GetAll();
+            return Ok(products);
+        }
+
+        [HttpPost]
+        public IActionResult Add([FromBody] ProductForAddRequest body)
+        {
+            try
             {
-                return Unauthorized(new { message = "Only admins can create products." });
+                _service.AddProduct(body);
+                return Ok(new { message = "Product Added" });
             }
-            var result = await _productService.CreateProductAsync(product);
-            if (result)
+            catch (UnauthorizedAccessException ex)
             {
-                return Ok(new { message = "Product created successfully!" });
+                return Unauthorized(new { message = ex.Message });
             }
-            return BadRequest(new { message = "Product already exists." });
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromBody] Product product)
+        public IActionResult Update([FromBody] ProductForUpdateRequest body)
         {
-            var currentUser = await _userService.GetCurrentUserAsync();
-            if (currentUser == null || currentUser.Role != UserRole.Admin)
+            try
             {
-                return Unauthorized(new { message = "Only admins can create products." });
+                _service.UpdateProduct(body);
+                return Ok(new { message = "Product Updated" });
             }
-            var result = await _productService.UpdateProductAsync(product);
-            if (result)
+            catch (UnauthorizedAccessException ex)
             {
-                return Ok(new { message = "Product updated successfully!" });
+                return Unauthorized(new { message = ex.Message });
             }
-            return BadRequest(new { message = "Product does not exist." });
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(string id)
+        public IActionResult Delete(int id, int userId)
         {
-            var currentUser = await _userService.GetCurrentUserAsync();
-            
-            if (currentUser == null || currentUser.Role != UserRole.Admin)
-            {
-                return Unauthorized(new { message = "Only admins can delete products." });
-            } 
-
-            var result = await _productService.DeleteProductAsync(id);
+            var result = _service.DeleteProduct(id, userId);
             if (result)
             {
-                return Ok(new { message = "Product deleted successfully!" });
+                return Ok("Product deleted successfully.");
             }
-            return BadRequest(new { message = "Product does not exist." });
+            else
+            {
+                return NotFound("Product not found.");
+            }
         }
     }
 }

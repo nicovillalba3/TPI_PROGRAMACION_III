@@ -18,9 +18,9 @@ namespace Infraestructure.Repositories
         {
             _context = context;
         }
-        public User? Get(string name)
+        public User? Get(int id)
         {
-            return _context.Users.FirstOrDefault(u => u.UserName == name);
+            return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
         public List<User> Get()

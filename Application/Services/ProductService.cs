@@ -1,4 +1,7 @@
-﻿using Domain.Entities;
+﻿using Application.Dtos;
+using Domain.Entities;
+using Domain.Enum;
+using Domain.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,57 +10,71 @@ namespace Application.Services
 {
     public class ProductService : IProductService
     {
-        private static List<Product> _products = new List<Product>();
+        private readonly IProductRepository _repository;
+        private readonly IUserRepository _userRepository;
 
-        public Task<IEnumerable<Product>> GetAllProductsAsync()
+        public ProductService(IProductRepository repository, IUserRepository userRepository)
         {
-            return Task.FromResult(_products.AsEnumerable());
+            _repository = repository;
+            _userRepository = userRepository;
         }
 
-        public Task<Product> GetProductByIdAsync(string id)
+        public Product Get(int id)
         {
-            var product = _products.SingleOrDefault(p => p.Id == id);
-            return Task.FromResult(product);
+            return _repository.Get(id);
         }
 
-        public Task<bool> CreateProductAsync(Product product)
+        public List<Product> GetAll()
         {
-            if (_products.Any(p => p.Id == product.Id))
+            return _repository.Get();
+        }
+
+        public void AddProduct(ProductForAddRequest request)
+        {
+            var user = _userRepository.Get(request.UserId);
+            if (user == null || user.Role != UserRole.Admin)
             {
-                return Task.FromResult(false); // El producto ya existe
+                throw new UnauthorizedAccessException("Only Admins can add products.");
             }
 
-            product.Id = Guid.NewGuid().ToString();
-            _products.Add(product);
-            return Task.FromResult(true);
+            var product = new Product()
+            {
+                Name = request.Name,
+                Stock = request.Stock,
+                Price = request.Price,
+                Image = request.Image
+            };
+            _repository.AddProduct(product);
         }
 
-        public Task<bool> UpdateProductAsync(Product product)
+        public void UpdateProduct(ProductForUpdateRequest request)
         {
-            var existingProduct = _products.SingleOrDefault(p => p.Id == product.Id);
-            if (existingProduct == null)
+            var user = _userRepository.Get(request.UserId);
+            if (user == null || user.Role != UserRole.Admin)
             {
-                return Task.FromResult(false); // El producto no existe
+                throw new UnauthorizedAccessException("Only Admins can update products.");
             }
 
-            existingProduct.Name = product.Name;
-            existingProduct.Stock = product.Stock;
-            existingProduct.Price = product.Price;
-            existingProduct.Image = product.Image;
-
-            return Task.FromResult(true);
+            var product = new Product()
+            {
+                
+                Name = request.Name,
+                Stock = request.Stock,
+                Price = request.Price,
+                Image = request.Image
+            };
+            _repository.UpdateProduct(product);
         }
 
-        public Task<bool> DeleteProductAsync(string id)
+        public bool DeleteProduct(int id, int userId)
         {
-            var product = _products.SingleOrDefault(p => p.Id == id);
-            if (product == null)
+            var user = _userRepository.Get(userId);
+            if (user == null || user.Role != UserRole.Admin)
             {
-                return Task.FromResult(false); // El producto no existe
+                throw new UnauthorizedAccessException("Only Admins can delete products.");
             }
 
-            _products.Remove(product);
-            return Task.FromResult(true);
+            return _repository.DeleteProduct(id);
         }
     }
 }

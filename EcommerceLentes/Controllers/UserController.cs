@@ -18,9 +18,9 @@ namespace Web.Controllers
 
 
         [HttpGet("{name}")]
-        public IActionResult Get(string name)
+        public IActionResult Get(int id)
         {
-            return Ok(_service.Get(name));
+            return Ok(_service.Get(id));
         }
 
         [HttpGet]
