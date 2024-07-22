@@ -12,11 +12,25 @@ namespace Infrastructure.Data
     {
         public DbSet<User> Users { get; set; }  // Se traduce a una tabla que va a tener coleccion de usuarios.
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Cart> Carts { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Cart>()
+              .HasKey(c => c.Order);
 
+            modelBuilder.Entity<Cart>()
+                .HasMany(c => c.ProductList)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasKey(p => p.Id);
+        }
     }
 }

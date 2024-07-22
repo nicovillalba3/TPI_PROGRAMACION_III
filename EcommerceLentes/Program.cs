@@ -13,6 +13,8 @@ using Infraestructure.Repositories;
 using Infraestructure;
 using Microsoft.Data.Sqlite;
 using Infrastructure.Repositories;
+using Application.Repositories;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+    
+
+
 
 var app = builder.Build();
 

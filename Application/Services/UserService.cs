@@ -61,33 +61,6 @@ namespace Application.Services
             _repository.UpdateUser(user);
         }
 
-        public Task<bool> UpdateUserAsync(UserForUpdateRequest user)
-        {
-            var existingUser = _users.SingleOrDefault(u => u.Id == user.Id);
-            if (existingUser == null)
-            {
-                return Task.FromResult(false); // El usuario no existe
-            }
-
-            existingUser.UserName = user.UserName;
-            existingUser.Password = user.Password;
-            existingUser.Email = user.Email;
-
-            return Task.FromResult(true);
-        }
-
-
-        public async Task<bool> DeleteUserAsync(int id)
-        {
-            var user = _users.SingleOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return await Task.FromResult(false); // El usuario no existe
-            }
-
-            _users.Remove(user);
-            return await Task.FromResult(true);
-        }
 
     }
 }

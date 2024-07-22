@@ -34,7 +34,7 @@ namespace Domain.Entities
             products.Add(product);
         }
 
-        public void EditProduct(List<Product> products, int productId, string name, int stock, double price, string image, User user)
+        public void EditProduct(List<Product> products, int productId, string name, int stock, decimal price, string image, User user)
         {
             if (user.Role != UserRole.Admin)
             {
