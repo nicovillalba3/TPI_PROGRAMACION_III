@@ -1,15 +1,61 @@
+using Application.Services;
+using Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Text.Json.Serialization;
+using Infrastructure.Data;
+using Domain.Interfaces;
+using Infraestructure.Repositories;
+using Infraestructure;
+using Microsoft.Data.Sqlite;
+using Infrastructure.Repositories;
+using Application.Repositories;
+using Microsoft.Extensions.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configurar servicios
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+// Configura el caché en memoria
+builder.Services.AddDistributedMemoryCache(); // Agrega el caché en memoria
+
+// Configura la sesión
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Configura el tiempo de expiración de la sesión
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DBConecctionString"),
+        b => b.MigrationsAssembly("Web")));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+    
+
+
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar el pipeline de middleware HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -17,7 +63,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseSession(); // Asegúrate de que esto está aquí
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
