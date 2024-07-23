@@ -48,5 +48,17 @@ namespace Infrastructure.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public Cart GetCartById(int orderId)
+        {
+            return _context.Carts.Include(c => c.ProductList)
+                                 .FirstOrDefault(c => c.Order == orderId);
+        }
+
+        public void CreateCart(Cart cart)
+        {
+            _context.Carts.Add(cart);
+            _context.SaveChanges();
+        }
     }
 }

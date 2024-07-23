@@ -10,7 +10,7 @@ namespace Infrastructure.Data
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<User> Users { get; set; }  // Se traduce a una tabla que va a tener coleccion de usuarios.
+        public DbSet<User> Users { get; set; } 
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Cart> Carts { get; set; }

@@ -17,6 +17,16 @@ namespace Web.Controllers
             _cartService = cartService;
         }
 
+        [HttpPost("create")]
+        public IActionResult CreateCart([FromBody] Cart cart)
+        {
+            
+            _cartService.CreateCart(cart);
+            return Ok("Cart created successfully");
+            
+        }
+
+
         [HttpPost("add/{orderId}")]
         public IActionResult AddProduct(int orderId, [FromBody] Product product)
         {
@@ -56,6 +66,22 @@ namespace Web.Controllers
         {
             return Ok(_cartService.GetTotalProducts(orderId));
         }
+
+        [HttpGet("typepayment/{orderId}")]
+        public IActionResult GetTypePayment(int orderId)
+        {
+            try
+            {
+                var typePayment = _cartService.GetTypePayment(orderId);
+                return Ok(typePayment);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        
     }
 }
 

@@ -68,5 +68,20 @@ namespace Application.Services
             var cart = _cartRepository.GetCart(orderId);
             return cart?.AmountProducts ?? 0;
         }
+
+        public string GetTypePayment(int orderId)
+        {
+            var cart = _cartRepository.GetCartById(orderId);
+            if (cart == null)
+            {
+                throw new Exception("Cart not found");
+            }
+            return cart.TypePayment;
+        }
+
+        public void CreateCart(Cart cart)
+        {
+            _cartRepository.CreateCart(cart);
+        }
     }
 }

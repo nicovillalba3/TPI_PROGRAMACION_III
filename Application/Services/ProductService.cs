@@ -34,7 +34,7 @@ namespace Application.Services
             var user = _userRepository.Get(request.UserId);
             if (user == null || user.Role != UserRole.Admin)
             {
-                throw new UnauthorizedAccessException("Only Admins can add products.");
+                throw new UnauthorizedAccessException("Sólo el administrador puede agregar nuevos productos.");
             }
 
             var product = new Product()
@@ -52,7 +52,7 @@ namespace Application.Services
             var user = _userRepository.Get(request.UserId);
             if (user == null || user.Role != UserRole.Admin)
             {
-                throw new UnauthorizedAccessException("Only Admins can update products.");
+                throw new UnauthorizedAccessException("Sólo el administrador puede actualizar productos.");
             }
 
             var product = new Product()
@@ -71,7 +71,7 @@ namespace Application.Services
             var user = _userRepository.Get(userId);
             if (user == null || user.Role != UserRole.Admin)
             {
-                throw new UnauthorizedAccessException("Only Admins can delete products.");
+                throw new UnauthorizedAccessException("Sólo el administrador puede borrar productos.");
             }
 
             return _repository.DeleteProduct(id);

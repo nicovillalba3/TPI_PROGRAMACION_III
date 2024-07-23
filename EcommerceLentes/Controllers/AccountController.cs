@@ -11,38 +11,38 @@ namespace Web.Controllers
     {
         private readonly IUserService _userService;
 
-        public AccountController(IUserService userService) // => INYECCION DEPENDECNCIA. AccountController depende de la implementación de IUserService.
+        public AccountController(IUserService userService)
         {
             _userService = userService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User user) // cuerpo solicitud formato JSON.
+        public async Task<IActionResult> Register([FromBody] User user) 
         {
             var result = await _userService.RegisterAsync(user);
             if (result)
             {
-                return Ok(new { message = "User registered successfully!" });
+                return Ok(new { message = "Usuario registrado con éxito!" });
             }
-            return BadRequest(new { message = "User already exists." });
+            return BadRequest(new { message = "El usuario ya existe!" });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model) // cuerpo solicitud formato JSON.
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userService.LoginAsync(model.Email, model.Password);
             if (user != null)
             {
-                return Ok(new { message = "Login successful!" });
+                return Ok(new { message = "Login exitoso!" });
             }
-            return Unauthorized(new { message = "Invalid email or password." });
+            return Unauthorized(new { message = "Credenciales inválidas." });
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             await _userService.LogoutAsync();
-            return Ok(new { message = "Logged out successfully!" });
+            return Ok(new { message = "Logged out exitoso!" });
         }
     }
 

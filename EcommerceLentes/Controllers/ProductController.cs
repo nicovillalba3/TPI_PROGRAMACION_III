@@ -14,7 +14,6 @@ namespace Web.Controllers
     {
         private readonly IProductService _service;
 
-        // Constructor actualizado para inyectar IProductService
         public ProductController(IProductService service)
         {
             _service = service;
@@ -26,7 +25,7 @@ namespace Web.Controllers
             var product = _service.Get(id);
             if (product == null)
             {
-                return NotFound("Product not found.");
+                return NotFound("Producto no encontrado.");
             }
             return Ok(product);
         }
@@ -44,7 +43,7 @@ namespace Web.Controllers
             try
             {
                 _service.AddProduct(body);
-                return Ok(new { message = "Product Added" });
+                return Ok(new { message = "Producto agregado!" });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -62,7 +61,7 @@ namespace Web.Controllers
             try
             {
                 _service.UpdateProduct(body);
-                return Ok(new { message = "Product Updated" });
+                return Ok(new { message = "Producto actualizado!" });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -80,11 +79,11 @@ namespace Web.Controllers
             var result = _service.DeleteProduct(id, userId);
             if (result)
             {
-                return Ok("Product deleted successfully.");
+                return Ok("Producto borrado con éxito!");
             }
             else
             {
-                return NotFound("Product not found.");
+                return NotFound("Producto no encontrado.");
             }
         }
     }

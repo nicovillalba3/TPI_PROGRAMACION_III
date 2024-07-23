@@ -14,5 +14,7 @@ namespace Application.Repositories
         Cart GetCart(int orderId);
         void UpdateCart(Cart cart);
         void DeleteCart(int orderId);
+        Cart GetCartById(int orderId);
+        void CreateCart(Cart cart);
     }
 }

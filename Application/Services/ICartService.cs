@@ -16,5 +16,7 @@ namespace Application.Services
         void UpdateProductStock(int orderId, UpdateProductDto updateProductDto);
         decimal GetTotalPrice(int orderId);
         int GetTotalProducts(int orderId);
+        string GetTypePayment(int orderId);
+        void CreateCart(Cart cart);
     }
 }
